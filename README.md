@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-This project automates employee invoice reimbursement analysis by leveraging Large Language Models (LLMs). It parses invoice PDFs and checks them against HR policy to determine if they are fully reimbursed, partially reimbursed, or declined — with reasons. It uses vector embeddings to store invoice data and allows Excel export.
+This project automates employee invoice reimbursement analysis by leveraging Large Language Models (LLMs). It parses invoice PDFs and checks them against HR policy to determine if they are fully reimbursed, partially reimbursed, or declined — with reasons. It uses vector embeddings to store invoice data and allows both Excel export and chatbot interaction.
 
-Built with FastAPI, Groq (LLM), ChromaDB (vector DB), and Python.
+Built with **FastAPI**, **Groq (LLM)**, **ChromaDB (vector DB)**, **Streamlit**, and **Python**.
 
 ---
 
@@ -13,13 +13,13 @@ Built with FastAPI, Groq (LLM), ChromaDB (vector DB), and Python.
 - ✅ Automate invoice review using LLMs
 - ✅ Store results in a vector store for search and filtering
 - ✅ Export results in a clean Excel format
-- ❌ (Optional) Chatbot querying — intentionally skipped due to instability
+- ✅ Optional: Chatbot querying via Streamlit
 
 ---
 
 ## Features
 
-### 1 Invoice Analysis API (`/analyze-invoices/`)
+### 1. Invoice Analysis API (`/analyze-invoices/`)
 - Upload an HR **policy (PDF)**
 - Upload a **ZIP of invoice PDFs**
 - Provide the **employee name**
@@ -28,7 +28,7 @@ Built with FastAPI, Groq (LLM), ChromaDB (vector DB), and Python.
   - Provide reason based on policy
 - Store results + vector embeddings in **ChromaDB**
 
-### 2 Excel Export API (`/export-excel/`)
+### 2. Excel Export API (`/export-excel/`)
 - Returns a `.xlsx` file containing:
   - Invoice filename
   - Status
@@ -36,23 +36,32 @@ Built with FastAPI, Groq (LLM), ChromaDB (vector DB), and Python.
   - Employee name
   - Text snippet
 
+### 3. Streamlit Chatbot (`chatbot_app.py`)
+- Ask invoice-related queries in natural language
+- Responses are generated using Groq LLM + ChromaDB context
+- Example queries:
+  - “Why was Invoice 3 declined?”
+  - “How many invoices were fully reimbursed?”
+
 ---
 
 ## Tech Stack
 
-| Area             | Tool/Tech                         |
-|------------------|-----------------------------------|
-| Language         | Python                            |
-| API Framework    | FastAPI                           |
-| LLM Integration  | Groq (Mixtral 8x7b via API)        |
-| PDF Parsing      | PyPDF2                            |
-| Embeddings       | Sentence-Transformers             |
-| Vector Store     | ChromaDB                          |
-| Excel Export     | Pandas + openpyxl                 |
+| Area             | Tool/Tech                          |
+|------------------|------------------------------------|
+| Language         | Python                             |
+| API Framework    | FastAPI                            |
+| LLM Integration  | Groq (Mixtral 8x7b via API)         |
+| PDF Parsing      | PyPDF2                             |
+| Embeddings       | Sentence-Transformers              |
+| Vector Store     | ChromaDB                           |
+| Excel Export     | Pandas + openpyxl                  |
+| Chatbot UI       | Streamlit                          |
 
 ---
 
 ## Folder Structure
+
 
 ```
 invoice-reimbursement/
@@ -93,9 +102,27 @@ source venv/bin/activate  # For Linux/macOS
 pip install -r requirements.txt
 ```
 ---
+## Environment Setup
+Set your API keys securely using environment variables.
+
+| Variable Name  |	Description  |
+|--------------------------------|
+|GROQ_API_KEY	Your | Groq API Key|
+
+Windows:
+```
+set GROQ_API_KEY=your-key-here
+```
+Linux/macOS:
+```
+export GROQ_API_KEY=your-key-here
+```
+---
+
 ## Running the Application
 
-
+### FastAPI Backend
+Run on terminal:
 ```
 uvicorn main:app --reload --reload-dir .
 ```
@@ -103,6 +130,41 @@ Then open this in your browser:
 ```
  http://127.0.0.1:8000/docs
 ```
+
+### Streamlit Chatbot
+Run on terminal:
+```
+streamlit run chatbot_app.py
+```
+Then open this in your browser:
+```
+http://localhost:8501
+```
+---
+## Sample Results
+
+### Excel Export Example
+
+![Excel Export Screenshot](images/excel.png)
+
+---
+
+### Chatbot Interface Example
+
+![Chatbot Interface Screenshot](images/chatbot.png)
+
+---
+
+### API Response Example
+
+![Invoices Analysis](images/analyz_invpices.png)
+
+---
+
+![Response of API JSON for Invoices Analysis](images/response.png)
+
+![Response of API JSON for Query](images/query.png)
+
 ---
 
 ## API Usage Guide
