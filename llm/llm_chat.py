@@ -1,38 +1,39 @@
-from groq import Groq
 import os
+from groq import Groq
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-def chat_with_documents(query: str, documents: list) -> str:
+def chat_with_documents(query: str, documents: list, policy_text: str = "") -> str:
     context = "\n\n---\n\n".join(documents)
 
     prompt = f"""
-You are a smart and helpful assistant trained to analyze and explain employee invoice reimbursements.
-You have access to historical analysis of invoices processed according to HR policy.
+You are a smart and accurate assistant trained to analyze and explain employee invoice reimbursements.
 
-Your task is:
-1. Understand the user's question.
-2. Refer to the documents provided.
-3. Respond with accurate, clear, and structured answers using **Markdown** formatting.
-4. If no relevant match is found, say so clearly.
+You must always refer to the **official HR reimbursement policy** provided below to guide your response.
+Do NOT assume anything about alcohol, food, lodging, or limits unless they are specifically mentioned in the policy.
 
 ---
-### Instructions:
-- Use headings, bullet points, or tables if needed.
-- Always include **Status** and **Reason** if applicable.
-- If the query is ambiguous or incomplete, ask for clarification.
-- If no matching invoice is found, return a polite message saying it doesn't exist.
+
+📘 **HR Policy**:
+{policy_text or "No HR policy provided."}
+
 ---
 
 🧑‍💼 **User Query**:
 {query}
 
-📄 **Relevant Documents**:
+---
+
+📄 **Relevant Invoice Texts**:
 {context}
 
 ---
 
-🤖 **Your Response in Markdown**:
+### Your Response (Use Markdown):
+- Answer clearly and briefly.
+- Always include **Status** and **Reason** (based on policy).
+- If no relevant match, say so politely.
+- If the query is unclear, ask for clarification.
 """
 
     try:

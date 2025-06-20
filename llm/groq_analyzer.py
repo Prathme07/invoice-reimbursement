@@ -2,7 +2,6 @@ import time
 import os
 from dotenv import load_dotenv
 from groq import Groq
-import os
 
 load_dotenv()
 
@@ -10,7 +9,11 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def analyze_invoice(policy_text, invoice_text, max_retries=3, base_delay=2):
     prompt = f"""
-You are an invoice checker.
+You are a strict and accurate invoice checker.
+
+Task:
+Determine whether the **invoice** complies with the **HR policy** below.
+Do not assume default rules like banning alcohol unless clearly stated in the policy.
 
 Policy:
 {policy_text}
@@ -18,12 +21,11 @@ Policy:
 Invoice:
 {invoice_text}
 
-Task:
-Is the invoice valid as per the policy?
 Reply in this format:
-Status: Fully Reimbursed / Partially Reimbursed / Declined
-Reason: <why?>
+Status: Fully Reimbursed / Partially Reimbursed / Declined  
+Reason: <clear justification from the policy>
 """
+
     for attempt in range(1, max_retries + 1):
         try:
             response = client.chat.completions.create(

@@ -7,20 +7,22 @@ This project automates the invoice reimbursement workflow using Large Language M
 
 The results are stored as vector embeddings in **ChromaDB**, enabling Excel export and chatbot-based querying via **Streamlit**.
 
+
+The results are stored as vector embeddings in **ChromaDB**, enabling Excel export and chatbot-based querying via **Streamlit**.
+
 ---
 
 ## 🎯 Objectives
 
-- ✅ Automate invoice validation using LLMs
-- ✅ Store invoice metadata in a vector DB (ChromaDB)
-- ✅ Provide Excel export functionality
-- ✅ Enable chatbot interaction for querying past invoices
+- Automate invoice validation using LLMs
+- Store invoice metadata in a vector DB (ChromaDB)
+- Provide Excel export functionality
+- Enable chatbot interaction for querying past invoices
+- Add user login, admin dashboard, and session tracking
 
 ---
 
-## ✨ Features
-
-### 🔹 1. `/analyze-invoices/` – Invoice Reimbursement API (FastAPI)
+### 🔹 1. `analyze-invoices` – Invoice Reimbursement API (FastAPI)
 - Upload an **HR Policy PDF**
 - Upload a **ZIP file of invoice PDFs**
 - Provide **employee name**
@@ -29,23 +31,38 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
   - Classified into: Fully / Partially / Declined
   - Stored in ChromaDB with metadata
 
-### 🔹 2. `/export-excel/` – Export to Excel
+### 🔹 2. `export-excel` – Export to Excel
 - Download all invoice records as `.xlsx`
 - Includes: employee, status, reason, and snippet
 
-### 🔹 3. `/search-invoices/` – Metadata-Aware Search API
+### 🔹 3. `search-invoices` – Metadata-Aware Search API
 - Accepts `query`, `employee`, `status`, `invoice_id`
-- Returns matching documents based on both:
+- Returns matching documents based on:
   - semantic similarity (via vector embedding)
   - metadata filtering (employee, status, etc.)
 
-### 🔹 4. Streamlit Interface (Tabs: Upload + Chatbot)
-- Upload HR policy and invoices (Tab 1)
-- Chatbot query interface (Tab 2)
-- Sidebar filters: employee name, status
-- Natural language queries like:
-  - “Why was Invoice 3 declined?”
-  - “Show fully reimbursed invoices by Anand”
+### 🔹 4. Unified Streamlit Interface
+- Tabs: 📤 Upload & Analyze, 💬 Chatbot, 📊 Admin Dashboard (for admin)
+- Sidebar:
+  - Login/logout session tracking
+  - Filters (employee/status) shown only in chatbot tab
+- Chatbot supports:
+  - “Which invoices contain alcohol?”
+  - “Show declined invoices by Shreya”
+- Admin dashboard allows:
+  - Viewing all records
+  - Excel download
+  - Role-based access control
+
+---
+
+## 🔐 Login Credentials
+
+| Username | Password  | Role     |
+|----------|-----------|----------|
+| admin    | admin123  | Admin    |
+| anand    | emp123    | Employee |
+| shreya   | emp456    | Employee |
 
 ---
 
@@ -66,9 +83,10 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
 
 ## 📁 Folder Structure
 
+
 ```
 invoice-reimbursement/
-├── app.py                    ← Unified Streamlit UI (upload + chatbot)
+├── app.py                    ← Unified Streamlit UI (upload + chatbot + dashboard)
 ├── main.py                   ← FastAPI backend
 ├── requirements.txt
 ├── README.md
@@ -106,6 +124,8 @@ venv\Scripts\activate     # Windows
 ```
 ```
 # OR
+
+```
 source venv/bin/activate  # Linux/macOS
 ```
 ```
@@ -221,16 +241,39 @@ Then queried using hybrid of vector similarity + metadata filtering.
 
 ## 🧠 Challenges & Learnings (Optional)
 
-- ✅ Groq API offers extremely fast LLM inference
-- ✅ ChromaDB supports fast similarity search — but allows only one metadata filter at a time (fixed via Python-side filtering)
-- ✅ Streamlit's layout flexibility allowed clean tab-based UX
-- ✅ Windows' multiprocessing limitations were solved by fallback to sequential or `uvicorn` without `--reload`
+- Groq API offers extremely fast LLM inference
+- ChromaDB supports fast similarity search — but allows only one metadata filter at a time (fixed via Python-side filtering)
+- Streamlit's layout flexibility allowed clean tab-based UX
+- Windows' multiprocessing limitations were solved by fallback to sequential or `uvicorn` without `--reload`
 
 ---
 
 ## 📷 Sample Screenshots
 
 
+### Web Interface
+
+A single web interface for both upload and analysis of invoices and a chatbot
+
+Upload & Analysis Tab:
+
+![Upload & Analysis](images/Upload_Analyze.png)
+
+---
+
+ChatBot Tab:
+
+![Chat Bot](images/chatbot.png)
+
+---
+
+Admin Panel:
+
+This panel will not be visible for employee
+
+![Admin Pannel](images/admin.png)
+
+---
 
 ### API Response Example
 
@@ -256,20 +299,6 @@ Response of Search Invoices:
 ![Response of API JSON for Query](images/queryresponses.png)
 
 ---
-### Web Interface
-
-A single web interface for both upload and analysis of invoices and a chatbot
-
-Upload & Analysis Tab:
-
-![Upload & Analysis](images/Upload_Analyze.png)
-
----
-
-ChatBot Tab:
-
-![Chat Bot](images/chatbot.png)
-
 
 ### Excel Export Example
 Excel Response in FastAPI:
