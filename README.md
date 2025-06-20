@@ -83,22 +83,21 @@ venv\Scripts\activate     # For Windows
 source venv/bin/activate  # For Linux/macOS
 pip install -r requirements.txt
 
----
 
 ## Running the Application
 
-```
+
 
 uvicorn main:app --reload --reload-dir .
+
 Then open this in your browser:
 
  http://127.0.0.1:8000/docs
 
----
 
-API Usage Guide
 
-```
+## API Usage Guide
+
 
 1 /analyze-invoices/ – POST
 Use this to analyze invoices.
@@ -121,11 +120,11 @@ Analysis
 Employee
 
 Snippets
----
+
 
 ## Prompt Design
 
-```
+
 
 Invoice Analysis Prompt:
 
@@ -136,11 +135,11 @@ You are a finance auditor. Given a reimbursement policy and an invoice, decide i
 
 Always explain your reasoning using the policy content.
 
----
 
-Vector Store (ChromaDB)
 
-```
+## Vector Store (ChromaDB)
+
+
 
 Each invoice's embeddings are stored with metadata:
 
