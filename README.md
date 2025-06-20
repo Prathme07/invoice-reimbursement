@@ -76,25 +76,33 @@ invoice-reimbursement/
 
 ```
 git clone https://github.com/yourusername/invoice-reimbursement.git
+```
+```
 cd invoice-reimbursement
+```
+```
 python -m venv venv
+```
+```
 venv\Scripts\activate     # For Windows
 # OR
 source venv/bin/activate  # For Linux/macOS
+```
+```
 pip install -r requirements.txt
-
-
+```
+---
 ## Running the Application
 
 
-
+```
 uvicorn main:app --reload --reload-dir .
-
+```
 Then open this in your browser:
-
+```
  http://127.0.0.1:8000/docs
-
-
+```
+---
 
 ## API Usage Guide
 
@@ -102,31 +110,31 @@ Then open this in your browser:
 1 /analyze-invoices/ – POST
 Use this to analyze invoices.
 
-policy_pdf: PDF file of HR policy
+- policy_pdf: PDF file of HR policy
 
-invoices_zip: ZIP of invoice PDFs
+- invoices_zip: ZIP of invoice PDFs
 
-employee_name: string
+- employee_name: string
 
-Returns JSON analysis for each invoice.
+- Returns JSON analysis for each invoice.
 
 2 /export-excel/ – GET
 Downloads a .xlsx file with:
 
-Invoice name
+- Invoice name
 
-Analysis
+- Analysis
 
-Employee
+- Employee
 
-Snippets
+- Snippets
 
-
+---
 ## Prompt Design
 
 
 
-Invoice Analysis Prompt:
+### Invoice Analysis Prompt:
 
 You are a finance auditor. Given a reimbursement policy and an invoice, decide if the invoice is:
 - Fully Reimbursed
@@ -137,20 +145,17 @@ Always explain your reasoning using the policy content.
 
 
 
-## Vector Store (ChromaDB)
+### Vector Store (ChromaDB)
 
 
 
 Each invoice's embeddings are stored with metadata:
 
-filename
-
-employee
-
-status
-
-reason
-
-invoice_text
+- filename
+- employee
+- status
+- reason
+-invoice_text
 
 This enables similarity search and future chatbot querying.
+---
