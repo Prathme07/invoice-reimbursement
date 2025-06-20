@@ -104,11 +104,11 @@ pip install -r requirements.txt
 ---
 ## Environment Setup
 Set your API keys securely using environment variables.
-
+```
 | Variable Name  |	Description  |
 |--------------------------------|
 |GROQ_API_KEY	Your | Groq API Key|
-
+```
 Windows:
 ```
 set GROQ_API_KEY=your-key-here
