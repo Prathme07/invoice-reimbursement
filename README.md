@@ -122,7 +122,7 @@ python -m venv venv
 ```
 venv\Scripts\activate     # Windows
 ```
-```
+
 # OR
 
 ```
@@ -253,7 +253,7 @@ Then queried using hybrid of vector similarity + metadata filtering.
 
 ### Web Interface
 
-A single web interface for both upload and analysis of invoices and a chatbot
+A single web interface for both upload and analysis of invoices, admin panel and a chatbot
 
 Upload & Analysis Tab:
 
@@ -263,7 +263,7 @@ Upload & Analysis Tab:
 
 ChatBot Tab:
 
-![Chat Bot](images/chatbot.png)
+![Chat Bot](images/admin.png)
 
 ---
 
@@ -271,7 +271,7 @@ Admin Panel:
 
 This panel will not be visible for employee
 
-![Admin Pannel](images/admin.png)
+![Admin Pannel](images/chatbot.png)
 
 ---
 
