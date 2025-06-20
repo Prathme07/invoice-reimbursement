@@ -1,16 +1,18 @@
 from fastapi import FastAPI, UploadFile, File, Form, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 import os, zipfile
-from utils.pdf_parser import extract_text_from_pdf
-from llm.groq_analyzer import analyze_invoice
-from vector_store.db import add_to_vector_db, query_vector_db
 import pandas as pd
-from fastapi.responses import FileResponse
+
+from utils.pdf_parser import extract_text_from_pdf
+from llm.llm_chat import chat_with_documents
+from llm.groq_analyzer import analyze_invoice
+from vector_store.db import add_to_vector_db, query_vector_db, search_similar_docs
 
 app = FastAPI()
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 @app.post("/analyze-invoices/")
 async def analyze_invoices(
@@ -19,19 +21,19 @@ async def analyze_invoices(
     employee_name: str = Form(...)
 ):
     try:
-
+        # Save the uploaded files
         policy_path = os.path.join(UPLOAD_DIR, policy_pdf.filename)
         with open(policy_path, "wb") as f:
             f.write(await policy_pdf.read())
-
 
         zip_path = os.path.join(UPLOAD_DIR, invoices_zip.filename)
         with open(zip_path, "wb") as f:
             f.write(await invoices_zip.read())
 
+        # Extract ZIP contents
+        extract_folder = os.path.join(UPLOAD_DIR, "invoices")
+        os.makedirs(extract_folder, exist_ok=True)
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
-            extract_folder = os.path.join(UPLOAD_DIR, "invoices")
-            os.makedirs(extract_folder, exist_ok=True)
             zip_ref.extractall(extract_folder)
 
         policy_text = extract_text_from_pdf(policy_path)
@@ -48,6 +50,7 @@ async def analyze_invoices(
                     "invoice_text_start": invoice_text[:200]
                 }
 
+                # Store in vector DB
                 add_to_vector_db(
                     document_id=filename,
                     text=invoice_text,
@@ -70,19 +73,21 @@ async def analyze_invoices(
 @app.get("/search-invoices/")
 def search_invoices(query: str = Query(..., description="Search invoices using AI")):
     try:
-        results = query_vector_db(query)
-        return {"results": results}
+        docs = search_similar_docs(query, top_k=5)
+        text_chunks = [doc['text'] for doc in docs]
+        answer = chat_with_documents(query, text_chunks)
+        return {
+            "query": query,
+            "response": answer
+        }
     except Exception as e:
         return {"error": str(e)}
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Invoice Analyzer API"}
 
 @app.get("/export-excel/")
 def export_excel():
     try:
-        chroma_results = query_vector_db("invoice")  # all invoices
+        chroma_results = query_vector_db("invoice")  
 
         data = []
         for i in range(len(chroma_results["documents"][0])):
@@ -97,7 +102,16 @@ def export_excel():
         file_path = "invoice_analysis_export.xlsx"
         df.to_excel(file_path, index=False)
 
-        return FileResponse(path=file_path, filename=file_path, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    
+        return FileResponse(
+            path=file_path,
+            filename=file_path,
+            media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Invoice Analyzer API"}
