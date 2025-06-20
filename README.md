@@ -74,7 +74,7 @@ invoice-reimbursement/
 
 ## Installation
 
-```bash
+```
 git clone https://github.com/yourusername/invoice-reimbursement.git
 cd invoice-reimbursement
 python -m venv venv
@@ -87,7 +87,7 @@ pip install -r requirements.txt
 
 ## Running the Application
 
-```bash
+```
 
 uvicorn main:app --reload --reload-dir .
 Then open this in your browser:
@@ -98,7 +98,7 @@ Then open this in your browser:
 
 API Usage Guide
 
-```bash
+```
 
 1 /analyze-invoices/ – POST
 Use this to analyze invoices.
@@ -125,7 +125,7 @@ Snippets
 
 ## Prompt Design
 
-```bash
+```
 
 Invoice Analysis Prompt:
 
@@ -140,7 +140,7 @@ Always explain your reasoning using the policy content.
 
 Vector Store (ChromaDB)
 
-```bash
+```
 
 Each invoice's embeddings are stored with metadata:
 
