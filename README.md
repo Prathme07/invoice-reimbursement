@@ -268,7 +268,7 @@ Upload & Analysis Tab:
 
 ChatBot Tab:
 
-![Chat Bot](images/ChatBot.png)
+![Chat Bot](images/chatbot.png)
 
 
 ### Excel Export Example
