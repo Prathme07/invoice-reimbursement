@@ -20,7 +20,7 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
 
 ## ✨ Features
 
-### 🔹 1. \`/analyze-invoices/\` – Invoice Reimbursement API (FastAPI)
+### 🔹 1. `/analyze-invoices/` – Invoice Reimbursement API (FastAPI)
 - Upload an **HR Policy PDF**
 - Upload a **ZIP file of invoice PDFs**
 - Provide **employee name**
@@ -29,12 +29,12 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
   - Classified into: Fully / Partially / Declined
   - Stored in ChromaDB with metadata
 
-### 🔹 2. \`/export-excel/\` – Export to Excel
-- Download all invoice records as \`.xlsx\`
+### 🔹 2. `/export-excel/` – Export to Excel
+- Download all invoice records as `.xlsx`
 - Includes: employee, status, reason, and snippet
 
-### 🔹 3. \`/search-invoices/\` – Metadata-Aware Search API
-- Accepts \`query\`, \`employee\`, \`status\`, \`invoice_id\`
+### 🔹 3. `/search-invoices/` – Metadata-Aware Search API
+- Accepts `query`, `employee`, `status`, `invoice_id`
 - Returns matching documents based on both:
   - semantic similarity (via vector embedding)
   - metadata filtering (employee, status, etc.)
@@ -66,7 +66,7 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
 
 ## 📁 Folder Structure
 
-\`\`\`
+```
 invoice-reimbursement/
 ├── app.py                    ← Unified Streamlit UI (upload + chatbot)
 ├── main.py                   ← FastAPI backend
@@ -84,38 +84,50 @@ invoice-reimbursement/
 │   └── embedder.py
 ├── uploads/                  ← temp storage
 └── .env                      ← (not committed)
-\`\`\`
+```
 
 ---
 
 ## ⚙️ Installation
 
-\`\`\`bash
-git clone https://github.com/yourusername/invoice-reimbursement.git
+```
+
+git clone https://github.com/Prathme07/invoice-reimbursement.git
+
+```
+```
 cd invoice-reimbursement
+```
+```
 python -m venv venv
+```
+```
 venv\Scripts\activate     # Windows
+```
+```
 # OR
 source venv/bin/activate  # Linux/macOS
+```
+```
 pip install -r requirements.txt
-\`\`\`
+```
 
 ---
 
 ## 🔐 Environment Setup
 
-Create a \`.env\` file and set your Groq API key:
+Create a `.env` file and set your Groq API key:
 
-\`\`\`env
+```env
 GROQ_API_KEY=your-groq-key-here
-\`\`\`
+```
 
 Or use:
 
-\`\`\`bash
+```
 export GROQ_API_KEY=your-groq-key-here  # macOS/Linux
 set GROQ_API_KEY=your-groq-key-here     # Windows
-\`\`\`
+```
 
 ---
 
@@ -123,9 +135,9 @@ set GROQ_API_KEY=your-groq-key-here     # Windows
 
 ### 🔹 FastAPI Backend
 
-\`\`\`bash
+```
 uvicorn main:app
-\`\`\`
+```
 
 Visit:  
 [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -134,9 +146,9 @@ Visit:
 
 ### 🔹 Streamlit Frontend
 
-\`\`\`bash
+```
 streamlit run app.py
-\`\`\`
+```
 
 Visit:  
 [http://localhost:8501](http://localhost:8501)
@@ -145,17 +157,17 @@ Visit:
 
 ## 📦 API Guide
 
-### POST \`/analyze-invoices/\`
-- Inputs: \`policy_pdf\` (PDF), \`invoices_zip\` (ZIP), \`employee_name\` (string)
+### POST `/analyze-invoices/`
+- Inputs: `policy_pdf` (PDF), `invoices_zip` (ZIP), `employee_name` (string)
 - Output: JSON result per invoice with:
-  - \`Status\`: Fully / Partially / Declined
-  - \`Reason\`: Explanation from LLM
+  - `Status`: Fully / Partially / Declined
+  - `Reason`: Explanation from LLM
 
-### GET \`/export-excel/\`
-- Downloads \`.xlsx\` with all analyzed invoices
+### GET `/export-excel/`
+- Downloads `.xlsx` with all analyzed invoices
 
-### GET \`/search-invoices/\`
-- Inputs: \`query\` + optional \`employee\`, \`status\`, \`invoice_id\`
+### GET `/search-invoices/`
+- Inputs: `query` + optional `employee`, `status`, `invoice_id`
 - Output: matched invoices with metadata
 
 ---
@@ -164,7 +176,7 @@ Visit:
 
 ### Invoice Analysis Prompt
 
-\`\`\`text
+```
 You are an invoice checker.
 
 Policy:
@@ -178,30 +190,30 @@ Is the invoice valid as per the policy?
 Reply in this format:
 Status: Fully Reimbursed / Partially Reimbursed / Declined
 Reason: <why?>
-\`\`\`
+```
 
 ### Chatbot Prompt (RAG Style)
 
-\`\`\`text
+```
 You are a smart and helpful assistant trained to analyze and explain employee invoice reimbursements.
 
 Your task is:
 1. Understand the user's question.
 2. Refer to the documents provided.
 3. Respond with clear and structured answers in **Markdown** format.
-\`\`\`
+```
 
 ---
 
 ## 📚 How Vector DB Works
 
-Each invoice is embedded using \`sentence-transformers\` and stored in ChromaDB with metadata:
+Each invoice is embedded using `sentence-transformers` and stored in ChromaDB with metadata:
 
-- \`employee\`
-- \`status\`
-- \`reason\`
-- \`invoice_id\`
-- \`text\`
+- `employee`
+- `status`
+- `reason`
+- `invoice_id`
+- `text`
 
 Then queried using hybrid of vector similarity + metadata filtering.
 
@@ -212,7 +224,7 @@ Then queried using hybrid of vector similarity + metadata filtering.
 - ✅ Groq API offers extremely fast LLM inference
 - ✅ ChromaDB supports fast similarity search — but allows only one metadata filter at a time (fixed via Python-side filtering)
 - ✅ Streamlit's layout flexibility allowed clean tab-based UX
-- ✅ Windows' multiprocessing limitations were solved by fallback to sequential or \`uvicorn\` without \`--reload\`
+- ✅ Windows' multiprocessing limitations were solved by fallback to sequential or `uvicorn` without `--reload`
 
 ---
 
@@ -272,7 +284,7 @@ Excel Response in FastAPI:
 
 - 🔐 No invoice data is stored permanently
 - 💬 Easy to extend with more LLM providers or advanced filtering
-- 🧪 Use \`uploads/sample.zip\` and \`sample_policy.pdf\` for demo
+- 🧪 Use `uploads/sample.zip` and `sample_policy.pdf` for demo
 
 ---
 
