@@ -1,224 +1,281 @@
+cat <<EOF > README.md
 # 🧾 AI/ML Invoice Reimbursement System
 
-## Project Overview
+## 🚀 Project Overview
 
-This project automates employee invoice reimbursement analysis by leveraging Large Language Models (LLMs). It parses invoice PDFs and checks them against HR policy to determine if they are fully reimbursed, partially reimbursed, or declined — with reasons. It uses vector embeddings to store invoice data and allows both Excel export and chatbot interaction.
+This project automates the invoice reimbursement workflow using Large Language Models (LLMs) and semantic search. It allows users to upload invoice PDFs and an HR policy document, analyzes the invoices using Groq LLM based on the policy, and classifies them as **Fully Reimbursed**, **Partially Reimbursed**, or **Declined** — with reasons.
 
-Built with **FastAPI**, **Groq (LLM)**, **ChromaDB (vector DB)**, **Streamlit**, and **Python**.
-
----
-
-## Objectives
-
-- ✅ Automate invoice review using LLMs
-- ✅ Store results in a vector store for search and filtering
-- ✅ Export results in a clean Excel format
-- ✅ Optional: Chatbot querying via Streamlit
+The results are stored as vector embeddings in **ChromaDB**, enabling Excel export and chatbot-based querying via **Streamlit**.
 
 ---
 
-## Features
+## 🎯 Objectives
 
-### 1. Invoice Analysis API (`/analyze-invoices/`)
-- Upload an HR **policy (PDF)**
-- Upload a **ZIP of invoice PDFs**
-- Provide the **employee name**
-- For each invoice:
-  - Classify: Fully Reimbursed / Partially / Declined
-  - Provide reason based on policy
-- Store results + vector embeddings in **ChromaDB**
+- ✅ Automate invoice validation using LLMs
+- ✅ Store invoice metadata in a vector DB (ChromaDB)
+- ✅ Provide Excel export functionality
+- ✅ Enable chatbot interaction for querying past invoices
 
-### 2. Excel Export API (`/export-excel/`)
-- Returns a `.xlsx` file containing:
-  - Invoice filename
-  - Status
-  - Reason
-  - Employee name
-  - Text snippet
+---
 
-### 3. Streamlit Chatbot (`chatbot_app.py`)
-- Ask invoice-related queries in natural language
-- Responses are generated using Groq LLM + ChromaDB context
-- Example queries:
+## ✨ Features
+
+### 🔹 1. \`/analyze-invoices/\` – Invoice Reimbursement API (FastAPI)
+- Upload an **HR Policy PDF**
+- Upload a **ZIP file of invoice PDFs**
+- Provide **employee name**
+- Each invoice is:
+  - Analyzed using Groq LLM
+  - Classified into: Fully / Partially / Declined
+  - Stored in ChromaDB with metadata
+
+### 🔹 2. \`/export-excel/\` – Export to Excel
+- Download all invoice records as \`.xlsx\`
+- Includes: employee, status, reason, and snippet
+
+### 🔹 3. \`/search-invoices/\` – Metadata-Aware Search API
+- Accepts \`query\`, \`employee\`, \`status\`, \`invoice_id\`
+- Returns matching documents based on both:
+  - semantic similarity (via vector embedding)
+  - metadata filtering (employee, status, etc.)
+
+### 🔹 4. Streamlit Interface (Tabs: Upload + Chatbot)
+- Upload HR policy and invoices (Tab 1)
+- Chatbot query interface (Tab 2)
+- Sidebar filters: employee name, status
+- Natural language queries like:
   - “Why was Invoice 3 declined?”
-  - “How many invoices were fully reimbursed?”
+  - “Show fully reimbursed invoices by Anand”
 
 ---
 
-## Tech Stack
+## 🧰 Tech Stack
 
-| Area             | Tool/Tech                          |
-|------------------|------------------------------------|
-| Language         | Python                             |
-| API Framework    | FastAPI                            |
-| LLM Integration  | Groq (Mixtral 8x7b via API)         |
-| PDF Parsing      | PyPDF2                             |
-| Embeddings       | Sentence-Transformers              |
-| Vector Store     | ChromaDB                           |
-| Excel Export     | Pandas + openpyxl                  |
-| Chatbot UI       | Streamlit                          |
+| Component       | Technology             |
+|----------------|------------------------|
+| Backend         | FastAPI                |
+| Frontend        | Streamlit              |
+| LLM API         | Groq (Mixtral / LLaMA3)|
+| Embeddings      | Sentence-Transformers  |
+| Vector DB       | ChromaDB               |
+| PDF Parsing     | PyPDF2                 |
+| Excel Export    | pandas + openpyxl      |
+| File Uploads    | python-multipart       |
 
 ---
 
-## Folder Structure
+## 📁 Folder Structure
 
-
-```
+\`\`\`
 invoice-reimbursement/
-├── main.py
+├── app.py                    ← Unified Streamlit UI (upload + chatbot)
+├── main.py                   ← FastAPI backend
 ├── requirements.txt
 ├── README.md
 ├── utils/
-│ └── pdf_parser.py
+│   ├── pdf_parser.py
+│   ├── shared_invoice_utils.py
+│   └── logger.py
 ├── llm/
-│ └── llm_analyzer.py
+│   ├── groq_analyzer.py
+│   └── llm_chat.py
 ├── vector_store/
-│ ├── db.py
-│ └── embedder.py
-├── uploads/
-│ └── (temporary files saved here)
-
-```
+│   ├── db.py
+│   └── embedder.py
+├── uploads/                  ← temp storage
+└── .env                      ← (not committed)
+\`\`\`
 
 ---
 
-## Installation
+## ⚙️ Installation
 
-```
+\`\`\`bash
 git clone https://github.com/yourusername/invoice-reimbursement.git
-```
-```
 cd invoice-reimbursement
-```
-```
 python -m venv venv
-```
-```
-venv\Scripts\activate     # For Windows
+venv\Scripts\activate     # Windows
 # OR
-source venv/bin/activate  # For Linux/macOS
-```
-```
+source venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt
-```
----
-## Environment Setup
-Set your API keys securely using environment variables.
-```
-| Variable Name  |	Description  |
-|--------------------------------|
-|GROQ_API_KEY	Your | Groq API Key|
-```
-Windows:
-```
-set GROQ_API_KEY=your-key-here
-```
-Linux/macOS:
-```
-export GROQ_API_KEY=your-key-here
-```
----
-
-## Running the Application
-
-### FastAPI Backend
-Run on terminal:
-```
-uvicorn main:app --reload --reload-dir .
-```
-Then open this in your browser:
-```
- http://127.0.0.1:8000/docs
-```
-
-### Streamlit Chatbot
-Run on terminal:
-```
-streamlit run chatbot_app.py
-```
-Then open this in your browser:
-```
-http://localhost:8501
-```
----
-## Sample Results
-
-### Excel Export Example
-
-![Excel Export Screenshot](images/excel.png)
+\`\`\`
 
 ---
 
-### Chatbot Interface Example
+## 🔐 Environment Setup
 
-![Chatbot Interface Screenshot](images/chatbot.png)
+Create a \`.env\` file and set your Groq API key:
+
+\`\`\`env
+GROQ_API_KEY=your-groq-key-here
+\`\`\`
+
+Or use:
+
+\`\`\`bash
+export GROQ_API_KEY=your-groq-key-here  # macOS/Linux
+set GROQ_API_KEY=your-groq-key-here     # Windows
+\`\`\`
 
 ---
+
+## ▶️ Running the App
+
+### 🔹 FastAPI Backend
+
+\`\`\`bash
+uvicorn main:app
+\`\`\`
+
+Visit:  
+[http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+### 🔹 Streamlit Frontend
+
+\`\`\`bash
+streamlit run app.py
+\`\`\`
+
+Visit:  
+[http://localhost:8501](http://localhost:8501)
+
+---
+
+## 📦 API Guide
+
+### POST \`/analyze-invoices/\`
+- Inputs: \`policy_pdf\` (PDF), \`invoices_zip\` (ZIP), \`employee_name\` (string)
+- Output: JSON result per invoice with:
+  - \`Status\`: Fully / Partially / Declined
+  - \`Reason\`: Explanation from LLM
+
+### GET \`/export-excel/\`
+- Downloads \`.xlsx\` with all analyzed invoices
+
+### GET \`/search-invoices/\`
+- Inputs: \`query\` + optional \`employee\`, \`status\`, \`invoice_id\`
+- Output: matched invoices with metadata
+
+---
+
+## 🤖 Prompt Design
+
+### Invoice Analysis Prompt
+
+\`\`\`text
+You are an invoice checker.
+
+Policy:
+{policy_text}
+
+Invoice:
+{invoice_text}
+
+Task:
+Is the invoice valid as per the policy?
+Reply in this format:
+Status: Fully Reimbursed / Partially Reimbursed / Declined
+Reason: <why?>
+\`\`\`
+
+### Chatbot Prompt (RAG Style)
+
+\`\`\`text
+You are a smart and helpful assistant trained to analyze and explain employee invoice reimbursements.
+
+Your task is:
+1. Understand the user's question.
+2. Refer to the documents provided.
+3. Respond with clear and structured answers in **Markdown** format.
+\`\`\`
+
+---
+
+## 📚 How Vector DB Works
+
+Each invoice is embedded using \`sentence-transformers\` and stored in ChromaDB with metadata:
+
+- \`employee\`
+- \`status\`
+- \`reason\`
+- \`invoice_id\`
+- \`text\`
+
+Then queried using hybrid of vector similarity + metadata filtering.
+
+---
+
+## 🧠 Challenges & Learnings (Optional)
+
+- ✅ Groq API offers extremely fast LLM inference
+- ✅ ChromaDB supports fast similarity search — but allows only one metadata filter at a time (fixed via Python-side filtering)
+- ✅ Streamlit's layout flexibility allowed clean tab-based UX
+- ✅ Windows' multiprocessing limitations were solved by fallback to sequential or \`uvicorn\` without \`--reload\`
+
+---
+
+## 📷 Sample Screenshots
+
+
 
 ### API Response Example
+
+Invoices Analysis:
 
 ![Invoices Analysis](images/analyz_invpices.png)
 
 ---
+Response of Invoices Analysis in JSON:
 
 ![Response of API JSON for Invoices Analysis](images/response.png)
+
+---
+
+Search Invoices:
 
 ![Response of API JSON for Query](images/query.png)
 
 ---
 
-## API Usage Guide
+Response of Search Invoices:
 
-
-1 /analyze-invoices/ – POST
-Use this to analyze invoices.
-
-- policy_pdf: PDF file of HR policy
-
-- invoices_zip: ZIP of invoice PDFs
-
-- employee_name: string
-
-- Returns JSON analysis for each invoice.
-
-2 /export-excel/ – GET
-Downloads a .xlsx file with:
-
-- Invoice name
-
-- Analysis
-
-- Employee
-
-- Snippets
+![Response of API JSON for Query](images/queryresponses.png)
 
 ---
-## Prompt Design
+### Web Interface
 
+A single web interface for both upload and analysis of invoices and a chatbot
 
+Upload & Analysis Tab:
 
-### Invoice Analysis Prompt:
+![Upload & Analysis](images/Upload_Analyze.png)
 
-You are a finance auditor. Given a reimbursement policy and an invoice, decide if the invoice is:
-- Fully Reimbursed
-- Partially Reimbursed
-- Declined
-
-Always explain your reasoning using the policy content.
-
-
-
-### Vector Store (ChromaDB)
-
-
-
-Each invoice's embeddings are stored with metadata:
-
-- filename
-- employee
-- status
-- reason
--invoice_text
-
-This enables similarity search and future chatbot querying.
 ---
+
+ChatBot Tab:
+
+![Chat Bot](images/ChatBot.png)
+
+
+### Excel Export Example
+Excel Response in FastAPI:
+
+![Excel Export Screenshot](images/excel.png)
+
+### 
+
+---
+
+## ✅ Final Notes
+
+- 🔐 No invoice data is stored permanently
+- 💬 Easy to extend with more LLM providers or advanced filtering
+- 🧪 Use \`uploads/sample.zip\` and \`sample_policy.pdf\` for demo
+
+---
+
+## ✅ Author
+
+> Developed by Prathmesh Chourasiya
