@@ -7,3 +7,4 @@ chromadb
 python-multipart
 pandas
 openpyxl
+streamlit
