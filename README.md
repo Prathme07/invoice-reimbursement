@@ -54,6 +54,7 @@ Built with FastAPI, Groq (LLM), ChromaDB (vector DB), and Python.
 
 ## Folder Structure
 
+```
 invoice-reimbursement/
 ├── main.py
 ├── requirements.txt
@@ -68,7 +69,7 @@ invoice-reimbursement/
 ├── uploads/
 │ └── (temporary files saved here)
 
-
+```
 
 ---
 
