@@ -2,7 +2,7 @@ import chromadb
 from chromadb.utils import embedding_functions
 from vector_store.embedder import get_embedding
 
-# Initialize ChromaDB client and collection
+
 chroma_client = chromadb.Client()
 collection = chroma_client.get_or_create_collection(name="invoice_analysis")
 
@@ -25,10 +25,10 @@ def query_vector_db(query_text: str, top_k: int = 3, filters: dict = None):
     """
     embedding = get_embedding(query_text)
 
-    # Fetch more docs to allow filtering
+
     raw_results = collection.query(
         query_embeddings=[embedding],
-        n_results=top_k * 5  # fetch more to allow post-filtering
+        n_results=top_k * 5  
     )
 
     filtered = []
