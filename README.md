@@ -22,7 +22,7 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
 
 ---
 
-### 🔹 1. `analyze-invoices` – Invoice Reimbursement API (FastAPI)
+### 🔹 1. `analyze-invoices`: Invoice Reimbursement API (FastAPI)
 - Upload an **HR Policy PDF**
 - Upload a **ZIP file of invoice PDFs**
 - Provide **employee name**
@@ -31,11 +31,11 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
   - Classified into: Fully / Partially / Declined
   - Stored in ChromaDB with metadata
 
-### 🔹 2. `export-excel` – Export to Excel
+### 🔹 2. `export-excel`: Export to Excel
 - Download all invoice records as `.xlsx`
 - Includes: employee, status, reason, and snippet
 
-### 🔹 3. `search-invoices` – Metadata-Aware Search API
+### 🔹 3. `search-invoices`: Metadata-Aware Search API
 - Accepts `query`, `employee`, `status`, `invoice_id`
 - Returns matching documents based on:
   - semantic similarity (via vector embedding)
@@ -92,6 +92,7 @@ invoice-reimbursement/
 ├── README.md
 ├── utils/
 │   ├── pdf_parser.py
+│   ├── batch_parser.py
 │   ├── shared_invoice_utils.py
 │   └── logger.py
 ├── llm/
@@ -101,40 +102,48 @@ invoice-reimbursement/
 │   ├── db.py
 │   └── embedder.py
 ├── uploads/                  ← temp storage
-└── .env                      ← (not committed)
+└── .env                      
 ```
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Installation & Setup
+
+1 Clone the Repository:
 
 ```
 
 git clone https://github.com/Prathme07/invoice-reimbursement.git
 
 ```
+2 Navigate to the Project Directory:
 ```
 cd invoice-reimbursement
 ```
+3 Create a Virtual Environment
+
 ```
 python -m venv venv
 ```
+4 Activate the Virtual Environment
 ```
 venv\Scripts\activate     # Windows
 ```
 
-# OR
+OR
 
 ```
 source venv/bin/activate  # Linux/macOS
 ```
+5 Install Dependencies
 ```
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🔐 Environment Setup
+
+6 Set Up Environment Variables
 
 Create a `.env` file and set your Groq API key:
 
@@ -146,6 +155,8 @@ Or use:
 
 ```
 export GROQ_API_KEY=your-groq-key-here  # macOS/Linux
+```
+```
 set GROQ_API_KEY=your-groq-key-here     # Windows
 ```
 
