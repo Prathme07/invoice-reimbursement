@@ -1,4 +1,3 @@
-cat <<EOF > README.md
 # 🧾 AI/ML Invoice Reimbursement System
 
 ## 🚀 Project Overview
@@ -86,7 +85,7 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
 
 ```
 invoice-reimbursement/
-├── app.py                    ← Unified Streamlit UI (upload + chatbot + dashboard)
+├── app.py                    ← Streamlit UI
 ├── main.py                   ← FastAPI backend
 ├── requirements.txt
 ├── README.md
@@ -248,14 +247,7 @@ Each invoice is embedded using `sentence-transformers` and stored in ChromaDB wi
 
 Then queried using hybrid of vector similarity + metadata filtering.
 
----
 
-## 🧠 Challenges & Learnings (Optional)
-
-- Groq API offers extremely fast LLM inference
-- ChromaDB supports fast similarity search — but allows only one metadata filter at a time (fixed via Python-side filtering)
-- Streamlit's layout flexibility allowed clean tab-based UX
-- Windows' multiprocessing limitations were solved by fallback to sequential or `uvicorn` without `--reload`
 
 ---
 
@@ -324,10 +316,7 @@ Excel Response in FastAPI:
 
 - 🔐 No invoice data is stored permanently
 - 💬 Easy to extend with more LLM providers or advanced filtering
-- 🧪 Use `uploads/sample.zip` and `sample_policy.pdf` for demo
 
 ---
 
-## ✅ Author
 
-> Developed by Prathmesh Chourasiya
