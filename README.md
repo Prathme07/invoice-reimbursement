@@ -20,6 +20,7 @@ The results are stored as vector embeddings in **ChromaDB**, enabling Excel expo
 - Add user login, admin dashboard, and session tracking
 
 ---
+## 🧩 System Modules
 
 ### 🔹 1. `analyze-invoices`: Invoice Reimbursement API (FastAPI)
 - Upload an **HR Policy PDF**
